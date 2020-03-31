@@ -1,11 +1,11 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgZorroAntdModule, NZ_I18N, en_US, zh_CN } from 'ng-zorro-antd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
@@ -14,6 +14,9 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { IconsProviderModule } from './icons-provider.module';
 import { MessagesComponent } from './pages/messages/messages.component';
 import { XsrfInterceptor } from './service/xsrf.interceptor';
+import { CookieService, CookieModule } from '@gorniv/ngx-universal';
+import { LoginService } from './service/login.service';
+import { MessagesService } from './service/messages.service';
 
 registerLocaleData(en);
 
@@ -24,15 +27,18 @@ registerLocaleData(en);
     MessagesComponent,
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     NgZorroAntdModule,
+    HttpClientModule,
+    HttpClientXsrfModule,
     FormsModule,
     NzFormModule,
-    HttpClientModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     IconsProviderModule,
+    CookieModule.forRoot(),
+    BrowserTransferStateModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
@@ -41,6 +47,9 @@ registerLocaleData(en);
       useClass: XsrfInterceptor,
       multi: true,
     },
+    CookieService,
+    LoginService,
+    MessagesService
   ],
   bootstrap: [AppComponent]
 })

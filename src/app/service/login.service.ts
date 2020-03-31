@@ -1,19 +1,26 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { timeout, delay, first } from 'rxjs/operators';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
   private user$ = new BehaviorSubject<UserData>(null);
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private _platformId: Object,
+    ) {}
   Login(data: AuthData) {
-    return this.http.post('/api/login', data).toPromise();
+    return this.http.post('http://10.0.10.27:10080/api/login', data).toPromise();
+  }
+  LoginSSR(data: AuthData) {
+    return this.http.post('api/login', data).toPromise();
   }
   Logout() {
-    return this.http.get('/api/logout').toPromise();
+    return this.http.get('http://10.0.10.27:10080/api/logout').toPromise();
   }
   get User$() {
     return this.user$.pipe(first());

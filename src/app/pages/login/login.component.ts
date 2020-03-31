@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from '../../service/login.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
         this.validateForm.controls[i].markAsDirty();
         this.validateForm.controls[i].updateValueAndValidity();
       }
-      const resp = await this.loginService.Login(this.validateForm.value);
+      const resp = await this.loginService.LoginSSR(this.validateForm.value);
       console.log('login success', resp);
       this.router.navigateByUrl('/messages');
     }
@@ -26,8 +27,10 @@ export class LoginComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private loginService: LoginService,
-              private router: Router
-    ) {}
+              private router: Router,
+              @Inject(PLATFORM_ID) private _platformId: Object,
+    ) {
+    }
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
