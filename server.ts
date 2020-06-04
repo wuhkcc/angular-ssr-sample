@@ -6,12 +6,18 @@ import { join } from "path";
 
 import { AppServerModule } from "./src/main.server";
 import { APP_BASE_HREF } from "@angular/common";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { NgxRequest, NgxResponse } from "@gorniv/ngx-universal";
 import { REQUEST, RESPONSE } from "@nguniversal/express-engine/tokens";
 import * as xhr2 from "xhr2";
 import 'localstorage-polyfill'
 global['localStorage'] = localStorage;
+const domino = require('domino');
+const path = require('path');
+const template = readFileSync(path.join('dist/deepin-ssr-starter/browser', 'index.html')).toString();
+const win = domino.createWindow(template);
+global['window'] = win;
+global['document'] = win.document;
 
 xhr2.prototype._restrictedHeaders = {};
 // The Express app is exported so that it can be used by serverless Functions.
@@ -29,6 +35,7 @@ export function app() {
       bootstrap: AppServerModule
     })
   );
+  
   server.set("view engine", "html");
   server.set("views", distFolder);
 

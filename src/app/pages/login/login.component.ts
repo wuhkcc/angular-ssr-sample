@@ -38,5 +38,7 @@ export class LoginComponent implements OnInit {
       password: [null, [Validators.required]],
       remember: [true]
     });
+    console.log("xxxxxxxxxxxxxx");
+    
   }
 }

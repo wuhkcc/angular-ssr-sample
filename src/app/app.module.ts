@@ -38,7 +38,7 @@ registerLocaleData(en);
     BrowserAnimationsModule,
     IconsProviderModule,
     CookieModule.forRoot(),
-    BrowserTransferStateModule
+    BrowserTransferStateModule,
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
